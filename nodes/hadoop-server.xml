@@ -1,0 +1,33 @@
+<?xml version="1.0" standalone="no"?>
+
+<kickstart>
+
+	<description>
+	Hadoop roll: server install
+	</description>
+
+	<copyright>
+	Copyright (c) 2000 - 2012 The Regents of the University of California.
+	All rights reserved. Rocks(r) v5.5/v6.0 www.rocksclusters.org
+	</copyright>
+
+	<changelog>
+	</changelog>
+
+        <package>hadoop-doc</package>
+
+<post>
+/usr/sbin/useradd -c "Hadoop User"  hduser
+rocks sync users
+chown -R hduser:hduser /opt/hadoop
+chown -R hduser:hduser /state/partition1/hadoop
+chown  hduser:hduser /var/log/hadoop
+chown  hduser:hduser /var/run/hadoop
+
+<!-- frontend is NameNode and ResourceManager -->
+
+<!-- compute nodes are DataNode and NodeManager -->
+
+</post>
+
+</kickstart>

@@ -1,0 +1,51 @@
+<?xml version="1.0" standalone="no"?>
+
+<kickstart>
+
+	<description>
+	Hadoop roll: common install to all nodes
+	</description>
+
+	<copyright>
+	Copyright (c) 2000 - 2012 The Regents of the University of California.
+	All rights reserved. Rocks(r) v5.5/v6.0 www.rocksclusters.org
+	</copyright>
+
+	<changelog>
+	</changelog>
+
+	<package>maven</package>
+	<package>protobuf</package>
+	<package>hadoop</package>
+	<package>myHadoop</package>
+	<package>rocks-hadoop</package>
+
+<post>
+mkdir -p /state/partition1/hadoop/tmp
+mkdir -p /var/log/hadoop
+mkdir -p /var/run/hadoop
+
+GID=`grep hduser: /etc/passwd`
+if [ "$GID" != "" ] ; then
+    chown -R hduser:hduser /state/partition1/hadoop
+    chown hduser:hduser /var/log/hadoop
+    chown hduser:hduser /var/run/hadoop
+fi
+
+RealHostName=
+files=`grep -l -r  master /opt/hadoop/etc/hadoop`
+for i in $files; do
+    sed -i "s/master/&Kickstart_PrivateHostname;/" $i
+done
+
+<file name="/opt/hadoop/etc/hadoop/slaves" perms="644">
+<eval>
+rocks list host compute | awk -F':' '{print $1}' | grep -v HOST
+</eval>
+</file>
+
+/sbin/ldconfig
+
+</post>
+
+</kickstart>
